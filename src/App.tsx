@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Upload } from "lucide-react";
 import "./App.css";
+import { version } from "../package.json";
 
 // Map department codes
 const deptMap: Record<string, string> = {
@@ -92,7 +93,7 @@ function process_employee_hours_file(
   const reg_hours_col_index = header.indexOf("regular hours") || 2;
   const ot_hours_col_index = header.indexOf("overtime hours") || 3;
   const job_code_col_index = header.indexOf("job code") || 15;
-  const normal_rate_col_index = header.indexOf("normal rate") || 4;
+  const normal_rate_col_index = header.indexOf("hourly rate") || 4;
 
   let employeeHours: EmployeeJobHours[] = [];
   for (let x = 1; x < row_count; x++) {
@@ -157,6 +158,8 @@ function process_tips_file(e: ProgressEvent<FileReader>): EmployeeTips[] {
   const dept_col_index = header.indexOf("job") || 2;
   const tips_col_index =
     header.indexOf("tips and gratuity after pooling") || 18;
+  const rounding_adjustment_col_index =
+    header.indexOf("rounding adjustment") || 20;
 
   let employeeTips: EmployeeTips[] = [];
 
@@ -181,10 +184,22 @@ function process_tips_file(e: ProgressEvent<FileReader>): EmployeeTips[] {
       );
     }
 
+    const rounding_adjustment = parseFloat(
+      cells[rounding_adjustment_col_index]
+    );
+
+    let tips = parseFloat(cells[tips_col_index]) || 0;
+    if (!isNaN(rounding_adjustment)) {
+      // Apply rounding adjustment
+      // negative adjustment means tips were rounded down, so we add it back
+      // positive adjustment means tips were rounded up, so we subtract it
+      tips -= rounding_adjustment;
+    }
+
     employeeTips.push({
       id: cells[employee_id_col_index],
       dept: dept,
-      tips: parseFloat(cells[tips_col_index]) || 0,
+      tips,
     });
   }
 
@@ -313,6 +328,11 @@ const App: React.FC = () => {
             dept: emp.dept,
           });
 
+          // Skip if no OT hours
+          if (emp.overtimeHours <= 0) {
+            continue;
+          }
+
           // Overtime Hours
           output.push({
             employee_id: parseInt(emp.id),
@@ -361,7 +381,7 @@ const App: React.FC = () => {
 
       // All processing done, prepare CSV for download
       let csvContent = "data:text/csv;charset=utf-8,";
-      csvContent += "employee_id,type,hours,rate,amount,dept\n";
+      // csvContent += "employee_id,type,hours,rate,amount,dept\n";
 
       output.forEach((row) => {
         const rowArray = [
@@ -388,7 +408,7 @@ const App: React.FC = () => {
   return (
     <div className="p-20">
       <h1 className="text-3xl font-bold mb-8">
-        Toast Payroll Tool (Olivine Only)
+        Toast Payroll Tool (Olivine Only) v{version}
       </h1>
       <EmployeHours file={employeeHoursFile} setFile={setEmployeeHoursFile} />
       <EmployeeTipsComponent
@@ -401,7 +421,7 @@ const App: React.FC = () => {
         className="mt-10 w-full py-3 px-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
         disabled={!employeeHoursFile || !employeeTipsFile}
       >
-        Process Files & download files
+        Process & download file
       </button>
     </div>
   );
