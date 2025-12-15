@@ -386,6 +386,7 @@ const App: React.FC = () => {
       output.forEach((row) => {
         const rowArray = [
           row.employee_id,
+          "E",
           row.type,
           row.hours !== undefined ? row.hours : "",
           row.rate !== undefined ? row.rate : "",
