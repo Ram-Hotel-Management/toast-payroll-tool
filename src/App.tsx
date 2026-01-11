@@ -411,9 +411,9 @@ const App: React.FC = () => {
           row.employee_id,
           "E",
           row.type,
-          row.hours !== undefined ? row.hours : "",
-          row.rate !== undefined ? row.rate : "",
-          row.amount !== undefined ? row.amount : "",
+          row.hours !== undefined && row.hours !== null ? row.hours : "",
+          row.rate !== undefined && row.rate !== null ? row.rate : "",
+          row.amount !== undefined && row.amount !== null ? row.amount : "",
           row.dept,
         ];
         csvContent += rowArray.join(",") + "\n";
