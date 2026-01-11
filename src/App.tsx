@@ -296,6 +296,18 @@ interface FinalOutput {
   dept: string;
 }
 
+// these employees will get additional fixed amount added to their payroll
+// if an entry for them exists in the hours
+const FIXED_AMT_FOR_EMPLOYEES: FinalOutput[] = [
+  // employee 52(Sarah Hill) gets $300 bonus every 2 weeks/ pay period
+  {
+    employee_id: 52,
+    amount: 300,
+    type: "REG",
+    dept: "EVENT",
+  },
+];
+
 const App: React.FC = () => {
   let [employeeHoursFile, setEmployeeHoursFile] = useState<File | null>(null);
   let [employeeTipsFile, setEmployeeTipsFile] = useState<File | null>(null);
@@ -341,6 +353,17 @@ const App: React.FC = () => {
             rate: emp.normalRate,
             dept: emp.dept,
           });
+        }
+
+        // Add fixed amounts for specific employees
+        for (let fixedEntry of FIXED_AMT_FOR_EMPLOYEES) {
+          const empExists = employeeHours.find(
+            (eh) => parseInt(eh.id) === fixedEntry.employee_id
+          );
+
+          if (empExists) {
+            output.push(fixedEntry);
+          }
         }
       } catch (error: any) {
         completed = false;
