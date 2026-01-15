@@ -357,13 +357,7 @@ const App: React.FC = () => {
 
         // Add fixed amounts for specific employees
         for (let fixedEntry of FIXED_AMT_FOR_EMPLOYEES) {
-          const empExists = employeeHours.find(
-            (eh) => parseInt(eh.id) === fixedEntry.employee_id
-          );
-
-          if (empExists) {
-            output.push(fixedEntry);
-          }
+          output.push(fixedEntry);
         }
       } catch (error: any) {
         completed = false;
@@ -434,6 +428,16 @@ const App: React.FC = () => {
       <h1 className="text-3xl font-bold mb-8">
         Toast Payroll Tool (Olivine Only) v{version}
       </h1>
+      {/*  */}
+      <h4>Following employees will have fixed amounts added:</h4>
+      <ul className="list-disc list-inside mb-6">
+        {FIXED_AMT_FOR_EMPLOYEES.map((emp) => (
+          <li key={emp.employee_id}>
+            Employee ID: {emp.employee_id}, Amount: ${emp.amount} , Dept:{" "}
+            {emp.dept}
+          </li>
+        ))}
+      </ul>
       <EmployeHours file={employeeHoursFile} setFile={setEmployeeHoursFile} />
       <EmployeeTipsComponent
         file={employeeTipsFile}
