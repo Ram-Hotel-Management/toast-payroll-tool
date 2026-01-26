@@ -80,7 +80,7 @@ const parseCSV = (text: string): string[][] => {
 };
 
 function process_employee_hours_file(
-  e: ProgressEvent<FileReader>
+  e: ProgressEvent<FileReader>,
 ): EmployeeJobHours[] {
   const data = e.target?.result as string;
   const lines = parseCSV(data);
@@ -104,7 +104,7 @@ function process_employee_hours_file(
       cells[employee_id_col_index].trim() == ""
     ) {
       throw new Error(
-        `[LABOR] Employee ID missing for row ${x + 1}\nPlease correct and retry`
+        `[LABOR] Employee ID missing for row ${x + 1}\nPlease correct and retry`,
       );
     }
 
@@ -115,7 +115,7 @@ function process_employee_hours_file(
     if (!dept) {
       alert(cells);
       throw new Error(
-        `[LABOR] Invalid Job Code for row ${x + 1}\nPlease correct and retry`
+        `[LABOR] Invalid Job Code for row ${x + 1}\nPlease correct and retry`,
       );
     }
 
@@ -138,6 +138,7 @@ const job_dept_map: Record<string, string> = {
   Host: "HOST",
   Steward: "STEWARD",
   "Training Server": "TSERVER",
+  "Server Training": "TSERVER",
 };
 
 // tips includes both tips and gratuity
@@ -170,7 +171,7 @@ function process_tips_file(e: ProgressEvent<FileReader>): EmployeeTips[] {
       cells[employee_id_col_index].trim() == ""
     ) {
       throw new Error(
-        `[TIPS] Employee ID missing for row ${x + 1}\nPlease correct and retry`
+        `[TIPS] Employee ID missing for row ${x + 1}\nPlease correct and retry`,
       );
     }
 
@@ -178,14 +179,23 @@ function process_tips_file(e: ProgressEvent<FileReader>): EmployeeTips[] {
     let dept = cells[dept_col_index];
     dept = job_dept_map[dept];
 
+    console.log(
+      "Mapped dept:",
+      dept,
+      "from job:",
+      cells[dept_col_index],
+      "x:",
+      x + 1,
+    );
+
     if (!dept) {
       throw new Error(
-        `[TIPS] Invalid Job for row ${x + 1}\nPlease correct and retry`
+        `[TIPS] Invalid Job for row ${x + 1}\nPlease correct and retry`,
       );
     }
 
     const rounding_adjustment = parseFloat(
-      cells[rounding_adjustment_col_index]
+      cells[rounding_adjustment_col_index],
     );
 
     let tips = parseFloat(cells[tips_col_index]) || 0;
