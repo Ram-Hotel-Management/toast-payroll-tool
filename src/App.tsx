@@ -310,12 +310,12 @@ interface FinalOutput {
 // if an entry for them exists in the hours
 const FIXED_AMT_FOR_EMPLOYEES: FinalOutput[] = [
   // employee 52(Sarah Hill) gets $300 bonus every 2 weeks/ pay period
-  {
-    employee_id: 52,
-    amount: 300,
-    type: "REG",
-    dept: "EVENT",
-  },
+  // {
+  //   employee_id: 52,
+  //   amount: 300,
+  //   type: "REG",
+  //   dept: "EVENT",
+  // },
 ];
 
 const App: React.FC = () => {
