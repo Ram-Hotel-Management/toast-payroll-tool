@@ -15,6 +15,7 @@ const deptMap: Record<string, string> = {
   "213": "HOST",
   "223": "SAUTE",
   "214": "RUNNER",
+  "154": "BARMGR",
   "37": "EVENT",
 };
 
@@ -331,7 +332,7 @@ const App: React.FC = () => {
     }
 
     output = [];
-    let completed = true;
+    let completed_employee_hrs = false;
 
     const reader1 = new FileReader();
     reader1.onload = (e) => {
@@ -369,8 +370,10 @@ const App: React.FC = () => {
         for (let fixedEntry of FIXED_AMT_FOR_EMPLOYEES) {
           output.push(fixedEntry);
         }
+
+        completed_employee_hrs = true;
+        write_the_file();
       } catch (error: any) {
-        completed = false;
         alert(error.message);
         return;
       }
@@ -378,6 +381,7 @@ const App: React.FC = () => {
 
     reader1.readAsText(employeeHoursFile);
 
+    let completed_tips_file = false;
     const reader2 = new FileReader();
     reader2.onload = (e) => {
       let employeeTips: EmployeeTips[] = [];
@@ -392,8 +396,10 @@ const App: React.FC = () => {
             dept: tip.dept,
           });
         }
+        completed_tips_file = true;
+        write_the_file();
       } catch (error: any) {
-        completed = false;
+        completed_tips_file = false;
         alert(error.message);
         return;
       }
@@ -401,8 +407,8 @@ const App: React.FC = () => {
 
     reader2.readAsText(employeeTipsFile);
 
-    reader2.onloadend = () => {
-      if (!completed) {
+    function write_the_file() {
+      if (!(completed_employee_hrs && completed_tips_file)) {
         return;
       }
 
@@ -430,7 +436,7 @@ const App: React.FC = () => {
       document.body.appendChild(link); // Required for FF
 
       link.click();
-    };
+    }
   };
 
   return (
