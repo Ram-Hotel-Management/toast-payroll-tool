@@ -14,8 +14,12 @@ const deptMap: Record<string, string> = {
   "226": "PREP",
   "213": "HOST",
   "223": "SAUTE",
+  "221": "SOUSCHEF",
   "214": "RUNNER",
   "154": "BARMGR",
+  "155": "EXECCHEF",
+  "31": "GENMGR",
+  "30": "ASTGMR",
   "37": "EVENT",
 };
 
